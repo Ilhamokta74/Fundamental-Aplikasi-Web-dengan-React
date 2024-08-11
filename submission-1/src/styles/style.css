@@ -150,10 +150,24 @@ textarea::placeholder {
 }
 
 .note-item {
-	padding: 16px;
+	display: flex;
+	flex-direction: column;
+	border: 1px solid #ccc;
 	border-radius: 8px;
-	border: 1px solid var(--on-background);
-	border-top: 5px solid;
+	padding: 16px;
+	margin: 8px;
+	height: 300px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.note-item__content {
+	flex: 1;
+}
+
+.note-item__action {
+	display: flex;
+	justify-content: space-between;
+	margin-top: auto;
 }
 
 .note-item__title {
