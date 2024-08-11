@@ -1,7 +1,7 @@
-import React from "react"
-import PropTypes from "prop-types"
+import React from "react";
+import PropTypes from "prop-types";
 
-function NoteInput({ handler, placeholder, type, value, style }) {
+function NoteInput({ handler, placeholder, type = "text", value, style }) {
 	return (
 		<>
 			{type === "textarea" ? (
@@ -22,7 +22,7 @@ function NoteInput({ handler, placeholder, type, value, style }) {
 				/>
 			)}
 		</>
-	)
+	);
 }
 
 NoteInput.propTypes = {
@@ -31,6 +31,6 @@ NoteInput.propTypes = {
 	value: PropTypes.string.isRequired,
 	type: PropTypes.string,
 	style: PropTypes.object,
-}
+};
 
-export default NoteInput
+export default NoteInput;

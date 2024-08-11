@@ -1,6 +1,6 @@
-import React from "react"
-import PropTypes from "prop-types"
-import { showFormattedDate } from "../utils"
+import React from "react";
+import PropTypes from "prop-types";
+import { showFormattedDate } from "../utils";
 
 function NoteItemContent({ title, body, createdAt }) {
 	return (
@@ -9,13 +9,13 @@ function NoteItemContent({ title, body, createdAt }) {
 			<p className="note-item__date">{showFormattedDate(createdAt)}</p>
 			<p className="note-item__body">{body}</p>
 		</section>
-	)
+	);
 }
 
 NoteItemContent.propTypes = {
 	title: PropTypes.string.isRequired,
 	body: PropTypes.string.isRequired,
 	createdAt: PropTypes.string.isRequired,
-}
+};
 
-export default NoteItemContent
+export default NoteItemContent;
