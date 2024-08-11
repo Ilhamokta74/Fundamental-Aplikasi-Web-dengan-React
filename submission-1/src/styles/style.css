@@ -258,14 +258,14 @@ textarea::placeholder {
 }
 
 .search-bar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .search-bar__title {
-  margin-top: 20px;
-  margin-left: 5%;
+	margin-top: 20px;
+	margin-left: 5%;
 }
 
 .search-bar input {
