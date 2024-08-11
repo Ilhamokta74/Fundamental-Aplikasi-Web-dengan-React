@@ -1,29 +1,29 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import NoteInput from "./NoteInput";
+import PropTypes from "prop-types";
 
 function NoteCreateForm({ submitHandler }) {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
 
-  const titleChangeHandler = (ev) => {
+  const handleTitleChange = (ev) => {
     const characterLimit = 50;
     if (ev.target.value.length <= characterLimit) {
       setTitle(ev.target.value);
     }
   };
 
-  const bodyChangeHandler = (ev) => {
+  const handleBodyChange = (ev) => {
     setBody(ev.target.value);
   };
 
-  const submitHandler = (ev) => {
+  const handleSubmit = (ev) => {
     ev.preventDefault();
-    if (!title || !body) return;
-
-    submitHandler({ title, body });
-    setTitle("");
-    setBody("");
+    if (title && body) {
+      submitHandler({ title, body });
+      setTitle("");
+      setBody("");
+    }
   };
 
   return (
@@ -32,10 +32,10 @@ function NoteCreateForm({ submitHandler }) {
       <p className="note-input__title__char-limit">
         Sisa karakter: <span>{50 - title.length}</span>
       </p>
-      <form onSubmit={submitHandler}>
+      <form onSubmit={handleSubmit}>
         <div>
           <NoteInput
-            handler={titleChangeHandler}
+            handler={handleTitleChange}
             placeholder="Tulis Judul Disini..."
             type="text"
             value={title}
@@ -43,7 +43,7 @@ function NoteCreateForm({ submitHandler }) {
         </div>
         <div>
           <NoteInput
-            handler={bodyChangeHandler}
+            handler={handleBodyChange}
             placeholder="Tulis Catatan Disini..."
             type="textarea"
             value={body}
