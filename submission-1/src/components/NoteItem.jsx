@@ -1,7 +1,7 @@
-import React from "react"
-import NoteItemContent from "./NoteItemContent"
-import NoteButtons from "./NoteButtons"
-import PropTypes from "prop-types"
+import React from "react";
+import NoteItemContent from "./NoteItemContent";
+import NoteButtons from "./NoteButtons";
+import PropTypes from "prop-types";
 
 function NoteItem({ note, archiveHandler, deleteHandler }) {
 	return (
@@ -18,13 +18,19 @@ function NoteItem({ note, archiveHandler, deleteHandler }) {
 				deleteHandler={() => deleteHandler(note.id)}
 			/>
 		</div>
-	)
+	);
 }
 
 NoteItem.propTypes = {
-	note: PropTypes.object.isRequired,
+	note: PropTypes.shape({
+		id: PropTypes.string.isRequired,
+		title: PropTypes.string.isRequired,
+		body: PropTypes.string.isRequired,
+		createdAt: PropTypes.string.isRequired,
+		archived: PropTypes.bool.isRequired,
+	}).isRequired,
 	archiveHandler: PropTypes.func.isRequired,
 	deleteHandler: PropTypes.func.isRequired,
-}
+};
 
-export default NoteItem
+export default NoteItem;

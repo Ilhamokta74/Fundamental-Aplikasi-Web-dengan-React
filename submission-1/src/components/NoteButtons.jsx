@@ -1,25 +1,25 @@
-import React from "react"
-import PropTypes from "prop-types"
+import React from "react";
+import PropTypes from "prop-types";
 
 function NoteButton({ id, archived, archiveHandler, deleteHandler }) {
 	return (
 		<section className="note-item__action">
 			<button
 				type="button"
-				onClick={archiveHandler}
+				onClick={() => archiveHandler(id)}
 				className="note-item__archive-button"
 			>
 				{archived ? "Batalkan" : "Arsipkan"}
 			</button>
 			<button
 				type="button"
-				onClick={deleteHandler}
+				onClick={() => deleteHandler(id)}
 				className="note-item__delete-button"
 			>
 				Hapus
 			</button>
 		</section>
-	)
+	);
 }
 
 NoteButton.propTypes = {
@@ -27,6 +27,6 @@ NoteButton.propTypes = {
 	archived: PropTypes.bool.isRequired,
 	archiveHandler: PropTypes.func.isRequired,
 	deleteHandler: PropTypes.func.isRequired,
-}
+};
 
-export default NoteButton
+export default NoteButton;
