@@ -1,81 +1,85 @@
-import React from "react"
-import { useSearchParams } from "react-router-dom"
-import PropTypes from "prop-types"
-import NoteList from "../components/NoteList"
-import SearchBar from "../components/SearchBar"
-import { archiveNote, deleteNote, getActiveNotes } from "../utils/local-data"
+import React from "react";
+import { useSearchParams } from "react-router-dom";
+import PropTypes from "prop-types";
+import NoteList from "../components/NoteList";
+import SearchBar from "../components/SearchBar";
+import { archiveNote, deleteNote, getActiveNotes } from "../utils/local-data";
 
 function HomePageWrapper() {
-	const [searchParams, setSearchParams] = useSearchParams()
-	const keyword = searchParams.get("keyword")
+	const [searchParams, setSearchParams] = useSearchParams();
+	const keyword = searchParams.get("keyword");
+	
 	function changeSearchParams(keyword) {
-		setSearchParams({ keyword })
+		setSearchParams({ keyword });
 	}
 
-	return <Home defaultKeyword={keyword} keywordChange={changeSearchParams} />
+	return <Home defaultKeyword={keyword} keywordChange={changeSearchParams} />;
 }
 
 class Home extends React.Component {
 	constructor(props) {
-		super(props)
+		super(props);
 		this.state = {
 			notes: getActiveNotes(),
 			keyword: props.defaultKeyword || "",
+		};
+		this.deleteNoteHandler = this.deleteNoteHandler.bind(this);
+		this.archiveNoteHandler = this.archiveNoteHandler.bind(this);
+		this.searchHandler = this.searchHandler.bind(this);
+	}
+
+	componentDidUpdate(prevProps) {
+		if (this.props.defaultKeyword !== prevProps.defaultKeyword) {
+			this.setState({
+				keyword: this.props.defaultKeyword || "",
+			});
 		}
-		this.deleteNoteHandler = this.deleteNoteHandler.bind(this)
-		this.archiveNoteHandler = this.archiveNoteHandler.bind(this)
-		this.searchHandler = this.searchHandler.bind(this)
 	}
 
 	deleteNoteHandler(id) {
-		deleteNote(id)
+		deleteNote(id);
 		this.setState({
-			...this.state,
 			notes: getActiveNotes(),
-		})
+		});
 	}
 
 	archiveNoteHandler(id) {
-		archiveNote(id)
+		archiveNote(id);
 		this.setState({
-			...this.state,
 			notes: getActiveNotes(),
-		})
+		});
 	}
 
 	searchHandler(keyword) {
-		this.setState(() => {
-			return {
-				keyword,
-			}
-		})
-
-		this.props.keywordChange(keyword)
+		this.setState({ keyword });
+		this.props.keywordChange(keyword);
 	}
 
 	render() {
-		const notes = this.state.notes.filter((note) => {
-			return note.title.toLowerCase().includes(this.state.keyword.toLowerCase())
-		})
+		const { notes, keyword } = this.state;
+		const filteredNotes = notes.filter((note) =>
+			note.title.toLowerCase().includes(keyword.toLowerCase())
+		);
+
 		return (
 			<>
 				<SearchBar
-					keyword={this.state.keyword}
+					keyword={keyword}
 					keywordChange={this.searchHandler}
 				/>
 				<NoteList
-					notes={notes}
+					notes={filteredNotes}
 					archiveHandler={this.archiveNoteHandler}
 					deleteHandler={this.deleteNoteHandler}
 				/>
 			</>
-		)
+		);
 	}
 }
 
 Home.propTypes = {
 	defaultKeyword: PropTypes.string,
 	keywordChange: PropTypes.func.isRequired,
-}
+};
 
-export default HomePageWrapper
+export default HomePageWrapper;
