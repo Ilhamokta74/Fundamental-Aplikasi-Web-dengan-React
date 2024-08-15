@@ -2,8 +2,8 @@
   --primary: #BB86FC;
   --primary-variant: #3700B3;
   --secondary: #03DAC6;
-  --background: #121212;
-  --surface: #121212;
+  --background: #202124;
+  --surface: #202124;
   --error: #CF6679;
   --warning: #F39C12;
   --on-background: #FFFFFF;
@@ -27,6 +27,7 @@
 
 a {
   color: var(--on-background);
+  text-decoration: none;
 }
 
 
@@ -58,6 +59,7 @@ header .navigation ul li {
   font-size: 24px;
   margin: 0 8px;
 }
+
 
 main {
   margin: 0 auto;
@@ -130,8 +132,11 @@ main {
   margin-top: 36px;
   font-size: 18px;
 }
+.detail-page__body a, .login-page__footer a, .register-page__footer a {
+  text-decoration: underline;
+}
 
-.detail-page__action, .homepage__action, .add-new-page__action {
+.detail-page__action, .homepage__action, .add-new-page__action, .edit-page__action {
   position: fixed;
   display: flex;
   gap: 16px;
@@ -154,11 +159,11 @@ main {
   cursor: pointer;
 }
 
-.add-new-page__input {
+.add-new-page__input, .edit-page__input {
   margin-top: 32px;
 }
 
-.add-new-page__input .add-new-page__input__title {
+.add-new-page__input .add-new-page__input__title, .edit-page__input .edit-page__input__title {
   width: 100%;
   background-color: transparent;
   border: 0;
@@ -169,11 +174,11 @@ main {
   padding: 8px 0;
 }
 
-.add-new-page__input__title::placeholder {
+.add-new-page__input__title::placeholder, .edit-page__input__title::placeholder {
   color: var(--on-background-grey);
 }
 
-.add-new-page__input .add-new-page__input__body {
+.add-new-page__input .add-new-page__input__body, .edit-page__input .edit-page__input__body {
   width: 100%;
   background-color: transparent;
   border: 0;
@@ -182,6 +187,10 @@ main {
   font-size: 24px;
   padding: 8px 0;
   min-height: 500px;
+}
+
+.rdw-editor-toolbar, .rdw-dropdown-selectedtext {
+  color: #333333;
 }
 
 [data-placeholder]:empty::before {
@@ -204,7 +213,7 @@ main {
   color: var(--on-background-grey);
 }
 
-.toggle-theme, .toggle-locale {
+.toggle-theme, .toggle-locale, .button-logout {
   background-color: transparent;
   border: 0;
   cursor: pointer;
@@ -215,7 +224,7 @@ main {
 }
 
 .toggle-theme {
-  font-size: 36px;
+  font-size: 28px;
 }
 
 .toggle-locale {
@@ -267,6 +276,11 @@ main {
   font-size: 28px;
   cursor: pointer;
   color: var(--on-background);
+}
+
+.loading-indicator {
+  text-align: center;
+  padding: 1rem;
 }
 
 @media screen and (min-width: 650px) {
