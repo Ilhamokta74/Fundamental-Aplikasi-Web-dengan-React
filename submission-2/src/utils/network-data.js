@@ -9,155 +9,98 @@ function putAccessToken(accessToken) {
 }
 
 async function fetchWithToken(url, options = {}) {
-  return fetch(url, {
+  const response = await fetch(url, {
     ...options,
     headers: {
       ...options.headers,
       Authorization: `Bearer ${getAccessToken()}`,
     },
   });
+
+  const responseJson = await response.json();
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      // Handle unauthorized error, such as redirecting to login
+      alert('Your session has expired. Please log in again.');
+      putAccessToken(''); // Clear the token
+      window.location.href = '/login'; // Redirect to login page
+    } else {
+      alert(responseJson.message || 'Something went wrong. Please try again later.');
+    }
+    return { error: true, data: null };
+  }
+
+  if (responseJson.status !== 'success') {
+    alert(responseJson.message || 'Unexpected response status.');
+    return { error: true, data: null };
+  }
+
+  return { error: false, data: responseJson.data };
 }
 
 async function login({ email, password }) {
-  const response = await fetch(`${BASE_URL}/login`, {
+  return fetchWithToken(`${BASE_URL}/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ email, password }),
   });
-
-  const responseJson = await response.json();
-
-  if (responseJson.status !== 'success') {
-    alert(responseJson.message);
-    return { error: true, data: null };
-  }
-
-  return { error: false, data: responseJson.data };
 }
 
 async function register({ name, email, password }) {
-  const response = await fetch(`${BASE_URL}/register`, {
+  return fetchWithToken(`${BASE_URL}/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ name, email, password }),
   });
-
-  const responseJson = await response.json();
-
-  if (responseJson.status !== 'success') {
-    alert(responseJson.message);
-    return { error: true };
-  }
-
-  return { error: false };
 }
 
 async function getUserLogged() {
-  const response = await fetchWithToken(`${BASE_URL}/users/me`);
-  const responseJson = await response.json();
-
-  if (responseJson.status !== 'success') {
-    return { error: true, data: null };
-  }
-
-  return { error: false, data: responseJson.data };
+  return fetchWithToken(`${BASE_URL}/users/me`);
 }
 
 async function addNote({ title, body }) {
-  const response = await fetchWithToken(`${BASE_URL}/notes`, {
+  return fetchWithToken(`${BASE_URL}/notes`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ title, body }),
   });
-
-  const responseJson = await response.json();
-
-  if (responseJson.status !== 'success') {
-    return { error: true, data: null };
-  }
-
-  return { error: false, data: responseJson.data };
 }
 
 async function getActiveNotes() {
-  const response = await fetchWithToken(`${BASE_URL}/notes`);
-  const responseJson = await response.json();
-
-  if (responseJson.status !== 'success') {
-    return { error: true, data: null };
-  }
-
-  return { error: false, data: responseJson.data };
+  return fetchWithToken(`${BASE_URL}/notes`);
 }
 
 async function getArchivedNotes() {
-  const response = await fetchWithToken(`${BASE_URL}/notes/archived`);
-  const responseJson = await response.json();
-
-  if (responseJson.status !== 'success') {
-    return { error: true, data: null };
-  }
-
-  return { error: false, data: responseJson.data };
+  return fetchWithToken(`${BASE_URL}/notes/archived`);
 }
 
 async function getNote(id) {
-  const response = await fetchWithToken(`${BASE_URL}/notes/${id}`);
-  const responseJson = await response.json();
-
-  if (responseJson.status !== 'success') {
-    return { error: true, data: null };
-  }
-
-  return { error: false, data: responseJson.data };
+  return fetchWithToken(`${BASE_URL}/notes/${id}`);
 }
 
 async function archiveNote(id) {
-  const response = await fetchWithToken(`${BASE_URL}/notes/${id}/archive`, {
+  return fetchWithToken(`${BASE_URL}/notes/${id}/archive`, {
     method: 'POST',
   });
-
-  const responseJson = await response.json();
-
-  if (responseJson.status !== 'success') {
-    return { error: true, data: null };
-  }
-
-  return { error: false, data: responseJson.data };
 }
 
 async function unarchiveNote(id) {
-  const response = await fetchWithToken(`${BASE_URL}/notes/${id}/unarchive`, {
+  return fetchWithToken(`${BASE_URL}/notes/${id}/unarchive`, {
     method: 'POST',
   });
-
-  const responseJson = await response.json();
-
-  if (responseJson.status !== 'success') {
-    return { error: true, data: null };
-  }
-
-  return { error: false, data: responseJson.data };
 }
 
 async function deleteNote(id) {
-  const response = await fetchWithToken(`${BASE_URL}/notes/${id}`, {
+  return fetchWithToken(`${BASE_URL}/notes/${id}`, {
     method: 'DELETE',
   });
-
-  const responseJson = await response.json();
-
-  if (responseJson.status !== 'success') {
-    return { error: true, data: null };
-  }
-
-  return { error: false, data: responseJson.data };
 }
 
 export {

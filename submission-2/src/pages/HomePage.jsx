@@ -16,11 +16,23 @@ const HomePage = () => {
   const [keyword, setKeyword] = React.useState(() => searchParams.get('keyword') || '');
 
   React.useEffect(() => {
-    getActiveNotes().then(({ data }) => {
-      setNotes(data);
+    const fetchNotes = async () => {
+      const { error, data } = await getActiveNotes();
+      if (!error) {
+        setNotes(data);
+      } else {
+        alert(
+          selectLanguage({
+            en: 'Failed to load notes. Please try again later.',
+            id: 'Gagal memuat catatan. Silakan coba lagi nanti.',
+          })
+        );
+      }
       setLoading(false);
-    });
-  }, []);
+    };
+
+    fetchNotes();
+  }, [selectLanguage]);
 
   const addButtonHandler = () => {
     navigate('/notes/add');
@@ -31,8 +43,9 @@ const HomePage = () => {
     setSearchParams({ keyword: newKeyword });
   };
 
-  const filteredNotes = notes
-    .filter(({ title }) => title.toLowerCase().includes(keyword.toLowerCase()));
+  const filteredNotes = notes.filter(({ title }) =>
+    title.toLowerCase().includes(keyword.toLowerCase())
+  );
 
   if (loading) {
     return <Loading />;

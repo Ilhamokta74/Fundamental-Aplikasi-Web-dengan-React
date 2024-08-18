@@ -19,7 +19,7 @@ const LoginPage = ({ loginSuccess }) => {
   return (
     <section className='login-page'>
         <h2>
-            {selectLanguage({ en: 'Login Magic Notes App', id: 'Masuk Aplikasi Catatan Ajaib' })}
+            {selectLanguage({ en: 'Login Notes App', id: 'Masuk Aplikasi Catatan' })}
         </h2>
         <LoginInput login={onLogin} />
         <p>

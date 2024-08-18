@@ -55,11 +55,13 @@ const App = () => {
   }), [theme]);
 
   React.useEffect(() => {
-    getUserLogged().then(({ data }) => {
+    const fetchUser = async () => {
+      const { data } = await getUserLogged();
       setAuthedUser(data);
       setInitializing(false);
-    });
-  }, []);
+    };
+    fetchUser();
+  }, [setAuthedUser]);
 
   React.useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -74,10 +76,11 @@ const App = () => {
   const onLogout = () => {
     setAuthedUser(null);
     putAccessToken('');
+    localStorage.removeItem('accessToken'); // Ensure token is removed from local storage
   };
 
   if (initializing) {
-    return null;
+    return <div>Loading...</div>; // Display a loading message or spinner while initializing
   }
 
   if (authedUser === null) {
