@@ -28,6 +28,14 @@ const AddPage = () => {
   };
 
   const submitButtonHandler = async () => {
+    if (!newNote.title || !newNote.body) {
+      alert(selectLanguage({
+        en: 'Please fill in the title and content fields.',
+        id: 'Silakan isi kolom judul dan isi catatan.'
+      }));
+      return;
+    }
+
     await addNote(newNote);
     navigate('/');
   };
