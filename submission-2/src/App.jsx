@@ -1,95 +1,125 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import Routes from './routes/routes'
-import LocaleContext from './contexts/LocaleContext'
-import AuthContext from './contexts/AuthContext'
-import { getUserLogged } from './utils/network_datas'
-import LoadingIndicator from './components/layout/LoadingIndicator'
-import HeaderComponent from './components/layout/HeaderComponent'
-import ThemeContext from './contexts/ThemeContext'
-import useTheme from './hooks/useTheme'
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Navigation from './components/Navigation';
+import HomePage from './pages/HomePage';
+import ArchivedPage from './pages/ArchivedPage';
+import AddPage from './pages/AddPage';
+import DetailPage from './pages/DetailPage';
+import ErrorPage from './pages/ErrorPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import ThemeContext from './contexts/ThemeContext';
+import LocaleContext from './contexts/LocaleContext';
+import { getUserLogged, putAccessToken } from './utils/network-data';
 
-function App() {
-  const [auth, setAuth] = useState(null)
-  const [locale, setLocale] = useState('id')
-  const [theme, changeTheme] = useTheme()
-  const [loading, setLoading] = useState(true)
+const App = () => {
+  const [authedUser, setAuthedUser] = React.useState(null);
+  const [initializing, setInitializing] = React.useState(true);
+  const [locale, setLocale] = React.useState(localStorage.getItem('locale') || 'en');
+  const [theme, setTheme] = React.useState(localStorage.getItem('theme') || 'dark');
 
   const toggleLocale = () => {
-    localStorage.setItem('locale', (locale === 'id' ? 'en' : 'id'))
-    setLocale((prevLocale) => (prevLocale === 'id' ? 'en' : 'id'))
+    setLocale((prevLocale) => {
+      const newLocale = prevLocale === 'en' ? 'id' : 'en';
+      localStorage.setItem('locale', newLocale);
+      return newLocale;
+    });
+  };
+
+  const localeContextValue = React.useMemo(() => {
+    const selectLanguage = ({ en, id }) => {
+      if (en === undefined || id === undefined) {
+        return 'Language options are not provided';
+      }
+      return locale === 'en' ? en : id;
+    };
+
+    return {
+      locale,
+      toggleLocale,
+      selectLanguage,
+    };
+  }, [locale]);
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => {
+      const newTheme = prevTheme === 'light' ? 'dark' : 'light';
+      localStorage.setItem('theme', newTheme);
+      return newTheme;
+    });
+  };
+
+  const themeContextValue = React.useMemo(() => ({
+    theme,
+    toggleTheme,
+  }), [theme]);
+
+  React.useEffect(() => {
+    getUserLogged().then(({ data }) => {
+      setAuthedUser(data);
+      setInitializing(false);
+    });
+  }, []);
+
+  React.useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  const onLoginSuccess = async ({ accessToken }) => {
+    putAccessToken(accessToken);
+    const { data } = await getUserLogged();
+    setAuthedUser(data);
+  };
+
+  const onLogout = () => {
+    setAuthedUser(null);
+    putAccessToken('');
+  };
+
+  if (initializing) {
+    return null;
   }
 
-  const localeContextValue = useMemo(() => ({
-    locale,
-    toggleLocale
-  }), [locale])
-
-  const authContextValue = useMemo(() => ({
-    auth,
-    setAuth
-  }), [auth])
-
-  const themeContextValue = useMemo(() => ({
-    theme,
-    changeTheme
-  }), [auth])
-
-  useEffect(() => {
-    /**
-     * Get User Logged
-     */
-    getUserLogged()
-      .then((res) => {
-        if (!res.error) {
-          setAuth(res.data)
-        } else {
-          setAuth(null)
-        }
-        setLoading(false)
-      })
-      .catch(() => {
-        alert('Error')
-      })
-
-    /**
-     * Inisialisasi Locale
-     */
-    if (localStorage.locale && ['id', 'en'].includes(localStorage.locale)) {
-      setLocale(localStorage.locale)
-    }
-
-    /**
-     * Inisialisasi Theme
-     */
-
-    if (localStorage.theme) {
-      changeTheme(localStorage.theme)
-    } else {
-      localStorage.setItem('theme', 'dark')
-      changeTheme('dark')
-    }
-  }, [])
-
-  return (
-    <ThemeContext.Provider value={themeContextValue}>
+  if (authedUser === null) {
+    return (
       <LocaleContext.Provider value={localeContextValue}>
-        <AuthContext.Provider value={authContextValue}>
-          <div className="app-container">
-            <HeaderComponent />
+        <ThemeContext.Provider value={themeContextValue}>
+          <div className='app-container'>
+            <header>
+              <Navigation />
+            </header>
             <main>
-              {
-                loading ? (
-                  <LoadingIndicator />
-                ) : (
-                  <Routes />
-                )
-              }
+              <Routes>
+                <Route path='/*' element={<LoginPage loginSuccess={onLoginSuccess} />} />
+                <Route path='/register' element={<RegisterPage />} />
+              </Routes>
             </main>
           </div>
-        </AuthContext.Provider>
+        </ThemeContext.Provider>
       </LocaleContext.Provider>
-    </ThemeContext.Provider>
-  )
-}
+    );
+  }
 
-export default App
+  return (
+    <LocaleContext.Provider value={localeContextValue}>
+      <ThemeContext.Provider value={themeContextValue}>
+        <div className='app-container'>
+          <header>
+            <Navigation logout={onLogout} name={authedUser.name} toggleTheme={toggleTheme} />
+          </header>
+          <main>
+            <Routes>
+              <Route path='/' element={<HomePage />} />
+              <Route path='/archived' element={<ArchivedPage />} />
+              <Route path='/notes/add' element={<AddPage />} />
+              <Route path='/notes/:id' element={<DetailPage />} />
+              <Route path='*' element={<ErrorPage />} />
+            </Routes>
+          </main>
+        </div>
+      </ThemeContext.Provider>
+    </LocaleContext.Provider>
+  );
+};
+
+export default App;

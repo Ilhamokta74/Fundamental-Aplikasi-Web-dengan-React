@@ -1,17 +1,11 @@
-const showFormattedDate = (date) => {
+const showFormattedDate = (date, type) => {
   const options = {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
-  }
-  return new Date(date).toLocaleDateString('id-ID', options)
-}
+    day: 'numeric',
+  };
+  return new Date(date).toLocaleDateString(type, options);
+};
 
-const capitalizeFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1)
-
-const extractContent = (html) => new DOMParser()
-  .parseFromString(html, 'text/html')
-  .documentElement.textContent
-
-export { showFormattedDate, capitalizeFirstLetter, extractContent }
+export { showFormattedDate };
