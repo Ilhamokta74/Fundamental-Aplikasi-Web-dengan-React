@@ -25,7 +25,7 @@ const RegisterPage = () => {
   return (
     <section className='register-page'>
         <h2>
-            {selectLanguage({ en: 'Register Magic Notes App', id: 'Daftar Aplikasi Catatan Ajaib' })}
+            {selectLanguage({ en: 'Register Notes App', id: 'Daftar Aplikasi Catatan' })}
         </h2>
         <RegisterInput register={onRegisterHandler} />
         <p>
