@@ -15,7 +15,7 @@ NotesButton.propTypes = {
   className: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
-  icon: PropTypes.object.isRequired,
+  icon: PropTypes.object,
 };
 
 export default NotesButton;
